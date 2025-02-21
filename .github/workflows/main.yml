@@ -5,7 +5,7 @@ on: [push, workflow_dispatch]
 jobs:
   build:
 
-    runs-on: windows-2022
+    runs-on: windows-2025
 
     steps:
     - name: Download ngrok
@@ -32,7 +32,7 @@ jobs:
       run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "Windowspass!" -Force)
       
     - name: Create Tunnel with ngrok
-      run: .\ngrok.exe tcp 22
+      run: .\ngrok.exe tcp 9987
       
     - name: Output ngrok Logs (for debugging)
       run: Get-Content ngrok.log -Tail 100
