@@ -32,7 +32,7 @@ jobs:
       run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "Windowspass!" -Force)
       
     - name: Create Tunnel with ngrok
-      run: .\ngrok.exe tcp 3389
+      run: .\ngrok.exe tcp 22
       
     - name: Output ngrok Logs (for debugging)
       run: Get-Content ngrok.log -Tail 100
