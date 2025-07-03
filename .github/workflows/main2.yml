@@ -4,6 +4,7 @@ on: [push, workflow_dispatch]
 
 jobs:
   build:
+
     runs-on: windows-2025
 
     steps:
@@ -14,12 +15,7 @@ jobs:
       run: Expand-Archive ngrok.zip -DestinationPath $pwd
       
     - name: Verify ngrok File Existence
-      run: |
-        if (!(Test-Path .\ngrok.exe)) {
-          Write-Error "ngrok.exe was not found in the expected path."
-        } else {
-          Write-Output "ngrok.exe found."
-        }
+      run: if (!(Test-Path .\ngrok.exe)) { Write-Error "ngrok.exe was not found in the expected path." } else { Write-Output "ngrok.exe found." }
 
     - name: Auth with ngrok
       run: .\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
@@ -34,29 +30,9 @@ jobs:
 
     - name: Set Local User Password
       run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "Windowspass!" -Force)
-
-    - name: Create Tunnel with ngrok (Background)
-      run: |
-        $p = Start-Process -FilePath $pwd\ngrok.exe -ArgumentList "tcp 3389" -PassThru -WindowStyle Hidden
-        $p.Id | Set-Content ngrok_pid.txt
-        Write-Output "ngrok started with PID $($p.Id)."
-
-    - name: Stop ngrok after 5 minutes
-      run: |
-        Write-Output "Sleeping for 5 minutes before stopping ngrok..."
-        Start-Sleep -Seconds 300
-        $ngrokPid = Get-Content ngrok_pid.txt
-        if ($ngrokPid) {
-          Stop-Process -Id $ngrokPid -Force
-          Write-Output "ngrok process $ngrokPid terminated after 5 minutes."
-        } else {
-          Write-Warning "Could not read ngrok PID, nothing to stop."
-        }
-
+      
+    - name: Create Tunnel with ngrok
+      run: .\ngrok.exe tcp 3389
+      
     - name: Output ngrok Logs (for debugging)
-      run: |
-        if (Test-Path ngrok.log) {
-          Get-Content ngrok.log -Tail 100
-        } else {
-          Write-Output "ngrok.log not found."
-        }
+      run: Get-Content ngrok.log -Tail 100
