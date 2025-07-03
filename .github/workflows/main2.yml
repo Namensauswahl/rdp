@@ -20,7 +20,7 @@ jobs:
     - name: Auth with ngrok
       run: .\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
       env:
-        NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
+        NGROK_AUTH_TOKEN2: ${{ secrets.NGROK_AUTH_TOKEN }}
 
     - name: Enable Terminal Services (RDP)
       run: |
